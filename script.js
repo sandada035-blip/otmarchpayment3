@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbPNczxmRTMd-_Jok0fVAqps_WQdFfrM1Ke-l-3qNEY_WILILzezLfqk1Gv2vSruDBng/exec"; // ដាក់ URL ពី Google Apps Script
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbPNczxmRTMd-_Jok0fVAqps_WQdFfrM1Ke-l-3qNEY_WILILzezLfqk1Gv2vSruDBng/exec"; 
 let globalData = { teachers: [], students: [] };
 
 async function loadAllData() {
@@ -8,12 +8,18 @@ async function loadAllData() {
         const res = await fetch(SCRIPT_URL);
         globalData = await res.json();
         
-        // បង្ហាញទិន្នន័យគ្រូដំបូង
+        // ១. បង្ហាញទិន្នន័យគ្រូដំបូង
         renderTeachers();
         
-        // គណនាស្ថិតិសរុប
+        // ២. គណនាស្ថិតិសរុប (ប្រើឈ្មោះ "ថវិកាប្រមូលបាន" តាម Google Sheet)
         document.getElementById('total-teachers').innerText = globalData.teachers.length + " នាក់";
-        let total = globalData.teachers.reduce((sum, t) => sum + (parseInt(String(t.ថវិកាសរុប).replace(/\D/g,'')) || 0), 0);
+        
+        let total = globalData.teachers.reduce((sum, t) => {
+            // លុបពាក្យ KHR ឬសញ្ញាផ្សេងៗចេញមុននឹងបូកលេខ
+            let value = String(t['ថវិកាប្រមូលបាន'] || 0).replace(/[^\d]/g, '');
+            return sum + (parseInt(value) || 0);
+        }, 0);
+        
         document.getElementById('total-budget').innerText = total.toLocaleString() + " ៛";
         
     } catch (err) {
@@ -23,14 +29,16 @@ async function loadAllData() {
 
 function renderTeachers() {
     const container = document.getElementById('data-list');
+    if (!globalData.teachers.length) return;
+
     container.innerHTML = globalData.teachers.map(t => `
         <div class="data-row">
             <div class="data-info">
-                <b>${t.ឈ្មោះគ្រូ || t.Name || 'មិនស្គាល់ឈ្មោះ'}</b>
-                <span>ចំនួនសិស្ស: ${t.ចំនួនសិស្ស || 0} នាក់</span>
+                <b>${t['ឈ្មោះគ្រូ'] || 'មិនស្គាល់ឈ្មោះ'}</b>
+                <span>ចំនួនសិស្ស: ${t['ចំនួនសិស្ស'] || 0} នាក់</span>
             </div>
             <div class="data-val">
-                ${t.ប្រាក់បំប៉ន || 0} ៛
+                ${t['ថវិកាគ្រូ 80%'] || 0}
                 <small style="display:block; font-size:10px; color:#64748b;">(៨០%)</small>
             </div>
         </div>
@@ -39,14 +47,16 @@ function renderTeachers() {
 
 function renderStudents() {
     const container = document.getElementById('data-list');
+    if (!globalData.students.length) return;
+
     container.innerHTML = globalData.students.map(s => `
         <div class="data-row">
             <div class="data-info">
-                <b>${s.ឈ្មោះសិស្ស || 'សិស្ស'}</b>
-                <span>ថ្នាក់ទី ${s.ថ្នាក់ || '...'}</span>
+                <b>${s['ឈ្មោះសិស្ស'] || 'សិស្ស'}</b>
+                <span>ថ្នាក់ទី ${s['ថ្នាក់'] || '...'}</span>
             </div>
             <div class="data-val" style="font-size: 0.8rem; color:#64748b;">
-                ${s.ស្ថានភាព || 'កំពុងរៀន'}
+                គ្រូបង្គោល: ${s['ឈ្មោះគ្រូ'] || 'N/A'}
             </div>
         </div>
     `).join('');
