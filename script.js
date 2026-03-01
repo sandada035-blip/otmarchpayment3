@@ -1,89 +1,86 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkruguofcfE8_RulcgD79XtIyrYkqYIsUb1C4C99XnMZsUrfws2PKb3rGk9Ype6P8b6A/exec"; 
-let currentView = 'teachers'; // សម្រាប់ចំណាំថាបច្ចុប្បន្នកំពុងមើល "គ្រូ" ឬ "សិស្ស"
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbruguofcfE8_RulcgD79XtIyrYkqYIsUb1C4C99XnMZsUrfws2PKb3rGk9Ype6P8b6A/exec"; 
+let globalData = { teachers: [], students: [] };
+let currentView = 'teachers';
 
-// មុខងារចម្រោះទិន្នន័យពេលស្វែងរក
-function handleSearch() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    if (currentView === 'teachers') {
-        renderTeachers(query);
-    } else {
-        renderStudents(query);
+// ១. ទាញទិន្នន័យពី Google Sheets
+async function loadAllData() {
+    try {
+        const res = await fetch(SCRIPT_URL);
+        globalData = await res.json();
+        
+        // បង្ហាញស្ថិតិសរុប (៤ នាក់ និង ៥៨០,០០០ ៛)
+        document.getElementById('total-teachers').innerText = globalData.teachers.length + " នាក់";
+        let total = globalData.teachers.reduce((sum, t) => {
+            let val = String(t['ថវិកាប្រមូលបាន'] || "0").replace(/[^\d]/g, '');
+            return sum + (parseInt(val) || 0);
+        }, 0);
+        document.getElementById('total-budget').innerText = total.toLocaleString() + " ៛";
+        
+        renderTeachers();
+    } catch (err) {
+        document.getElementById('data-list').innerHTML = "ការតភ្ជាប់មានបញ្ហា!";
     }
 }
 
-// កែសម្រួលមុខងារបង្ហាញគ្រូ (បន្ថែម Filter)
+// ២. មុខងារបង្ហាញបញ្ជីគ្រូ (១០០%, ៨០%, ២០%)
 function renderTeachers(filter = "") {
     currentView = 'teachers';
     const container = document.getElementById('data-list');
-    
-    // ចម្រោះយកតែឈ្មោះដែលត្រូវនឹងការស្វែងរក
-    const filteredData = globalData.teachers.filter(t => 
-        (t['ឈ្មោះគ្រូ'] || "").toLowerCase().includes(filter)
-    );
+    const filtered = globalData.teachers.filter(t => (t['ឈ្មោះគ្រូ'] || "").toLowerCase().includes(filter.toLowerCase()));
 
-    container.innerHTML = filteredData.map(t => `
-        <div class="data-row" style="flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px;">
-            <div style="display: flex; justify-content: space-between; width: 100%;">
-                <b style="font-size: 1.1rem; color: #1e293b;">${t['ឈ្មោះគ្រូ'] || 'មិនស្គាល់'}</b>
-                <span class="badge" style="background: #e0e7ff; color: #4338ca; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem;">${t['ចំនួនសិស្ស'] || 0} នាក់</span>
+    container.innerHTML = filtered.map(t => `
+        <div class="data-row">
+            <div style="display: flex; justify-content: space-between;">
+                <b>${t['ឈ្មោះគ្រូ']}</b>
+                <span class="badge" style="background:#e0e7ff; color:#4338ca;">${t['ចំនួនសិស្ស']} សិស្ស</span>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%;">
-                <div style="text-align: center; background: #f1f5f9; padding: 8px; border-radius: 10px;">
-                    <small style="display: block; color: #64748b; font-size: 9px;">សរុប (១០០%)</small>
-                    <b style="font-size: 0.8rem;">${t['ថវិកាប្រមូលបាន'] || '0 ៛'}</b>
-                </div>
-                <div style="text-align: center; background: #e0f2fe; padding: 8px; border-radius: 10px;">
-                    <small style="display: block; color: #0369a1; font-size: 9px;">គ្រូ (៨០%)</small>
-                    <b style="color: #0284c7; font-size: 0.8rem;">${t['ថវិកាគ្រូ 80%'] || '0 ៛'}</b>
-                </div>
-                <div style="text-align: center; background: #fef2f2; padding: 8px; border-radius: 10px;">
-                    <small style="display: block; color: #b91c1c; font-size: 9px;">សាលា (២០%)</small>
-                    <b style="color: #dc2626; font-size: 0.8rem;">${t['ថវិកាសាលា20%'] || '0 ៛'}</b>
-                </div>
+            <div class="grid-3">
+                <div class="box-val" style="background:#f1f5f9;"><small>១០០%</small><br><b>${t['ថវិកាប្រមូលបាន']}</b></div>
+                <div class="box-val" style="background:#e0f2fe; color:#0369a1;"><small>៨០%</small><br><b>${t['ថវិកាគ្រូ 80%']}</b></div>
+                <div class="box-val" style="background:#fef2f2; color:#b91c1c;"><small>២០%</small><br><b>${t['ថវិកាសាលា20%']}</b></div>
             </div>
         </div>
     `).join('');
 }
 
-// កែសម្រួលមុខងារបង្ហាញសិស្ស (បន្ថែម Filter)
+// ៣. មុខងារបង្ហាញបញ្ជីសិស្ស (តម្លៃសិក្សា, ៨០%, ២០%)
 function renderStudents(filter = "") {
     currentView = 'students';
     const container = document.getElementById('data-list');
-    
-    const filteredData = globalData.students.filter(s => 
-        (s['ឈ្មោះសិស្ស'] || "").toLowerCase().includes(filter)
-    );
+    const filtered = globalData.students.filter(s => (s['ឈ្មោះសិស្ស'] || "").toLowerCase().includes(filter.toLowerCase()));
 
-    container.innerHTML = filteredData.map(s => `
-        <div class="data-row" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; border-left: 5px solid #6366f1;">
-            <div style="display: flex; justify-content: space-between; width: 100%;">
-                <div>
-                    <b style="font-size: 1rem;">${s['ឈ្មោះសិស្ស'] || 'សិស្ស'}</b>
-                    <div style="font-size: 0.75rem; color: #64748b;">ថ្នាក់: ${s['ថ្នាក់'] || '...'} | គ្រូ: ${s['ឈ្មោះគ្រូ'] || 'N/A'}</div>
-                </div>
-                <div style="text-align: right;">
-                    <small style="display: block; color: #64748b; font-size: 9px;">តម្លៃសិក្សា</small>
-                    <b style="font-size: 0.9rem;">${s['តម្លៃសិក្សា'] || '0 ៛'}</b>
-                </div>
+    container.innerHTML = filtered.map(s => `
+        <div class="data-row" style="border-left: 5px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between;">
+                <div><b>${s['ឈ្មោះសិស្ស']}</b><br><small>ថ្នាក់: ${s['ថ្នាក់']} | គ្រូ: ${s['ឈ្មោះគ្រូ']}</small></div>
+                <div style="text-align:right;"><small>សិក្សា</small><br><b>${s['តម្លៃសិក្សា']}</b></div>
             </div>
-            <div style="display: flex; gap: 10px; width: 100%; border-top: 1px dashed #e2e8f0; padding-top: 8px; margin-top: 5px;">
-                <div style="flex: 1;">
-                    <small style="display: block; color: #64748b; font-size: 9px;">គ្រូ (៨០%)</small>
-                    <span style="color: #16a34a; font-weight: bold; font-size: 0.8rem;">${s['ថវិកាគ្រូ 80%'] || '0 ៛'}</span>
-                </div>
-                <div style="flex: 1;">
-                    <small style="display: block; color: #64748b; font-size: 9px;">សិស្ស (២០%)</small>
-                    <span style="color: #ea580c; font-weight: bold; font-size: 0.8rem;">${s['ថវិកាសិស្ស 20%'] || '0 ៛'}</span>
-                </div>
+            <div style="display: flex; gap: 20px; border-top: 1px dashed #eee; pt-2; margin-top:5px; padding-top:8px;">
+                <div><small>គ្រូ (៨០%):</small> <span style="color:#16a34a; font-weight:bold;">${s['ថវិកាគ្រូ 80%']}</span></div>
+                <div><small>សិស្ស (២០%):</small> <span style="color:#ea580c; font-weight:bold;">${s['ថវិកាសិស្ស 20%']}</span></div>
             </div>
         </div>
     `).join('');
 }
 
-// កែសម្រួលមុខងារ switchContent ដើម្បីសម្អាត Search Box ពេលប្តូរ Tab
+// ៤. មុខងារស្វែងរក
+function handleSearch() {
+    const q = document.getElementById('search-input').value;
+    currentView === 'teachers' ? renderTeachers(q) : renderStudents(q);
+}
+
 function switchContent(type, btn) {
-    document.getElementById('search-input').value = ""; // លុបអក្សរក្នុង Search box ចេញ
+    document.getElementById('search-input').value = "";
     document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     type === 'teachers' ? renderTeachers() : renderStudents();
 }
+
+function navigate(page, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page + '-page').classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+window.onload = loadAllData;
