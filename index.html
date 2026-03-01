@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>របាយការណ៍ថវិកាបំប៉នខែមីនា</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Siemreap&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <img src="logo.png" alt="School Logo" class="logo">
+            <h1>របាយការណ៍ថវិកាបំប៉ន</h1>
+            <p class="subtitle">ខែមីនា ឆ្នាំ២០២៤</p>
+        </header>
+
+        <div class="summary-grid">
+            <div class="card">
+                <span class="label">គ្រូសរុប</span>
+                <span class="value" id="total-teachers">៤ នាក់</span>
+            </div>
+            <div class="card">
+                <span class="label">ថវិកាសរុប</span>
+                <span class="value" id="total-budget">៥៨០,០០០ ៛</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('teachers')">ទិន្នន័យគ្រូ</button>
+            <button class="tab-btn" onclick="showTab('students')">ទិន្នន័យសិស្ស</button>
+        </div>
+
+        <main id="content">
+            <div id="teachers-section" class="data-section">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ឈ្មោះគ្រូ</th>
+                                <th>សិស្ស</th>
+                                <th>សរុប (១០០%)</th>
+                                <th>គ្រូ (៨០%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="students-section" class="data-section" style="display:none;">
+                <div id="student-list">
+                    </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active">🏠<span>ដើម</span></div>
+            <div class="nav-item">📊<span>របាយការណ៍</span></div>
+            <div class="nav-item">⚙️<span>កំណត់</span></div>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
