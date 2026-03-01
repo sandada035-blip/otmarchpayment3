@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>របាយការណ៍ថវិកា - ម៉ាលីនដា</title>
-    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Siemreap&family=Freehand&display=swap" rel="stylesheet">
+    <title>របាយការណ៍ថវិកា - ហម ម៉ាលីនដា</title>
+    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Siemreap&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,7 +16,7 @@
                     <img src="logo.png" alt="Logo" class="app-logo">
                     <div class="header-text">
                         <h2>របាយការណ៍ថវិកាបំប៉ន</h2>
-                        <p>ខែមីនា ឆ្នាំសិក្សា២០២៥-២០២៦</p>
+                        <p>ខែមីនា​ ឆ្នាំ២០២៥-២០២៦</p>
                     </div>
                 </div>
             </header>
@@ -44,12 +44,14 @@
                             <i class="fas fa-user-graduate"></i> សិស្ស
                         </button>
                     </div>
+
                     <div class="search-container">
-    <i class="fas fa-search search-icon"></i>
-    <input type="text" id="search-input" placeholder="ស្វែងរកឈ្មោះគ្រូ ឬសិស្ស..." oninput="handleSearch()">
-</div>
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="search-input" placeholder="ស្វែងរកឈ្មោះ..." oninput="handleSearch()">
+                    </div>
+
                     <div id="data-list" class="fade-in">
-                        <div class="loading-spinner"></div>
+                        <div class="loading">កំពុងទាញទិន្នន័យ...</div>
                     </div>
                 </div>
             </div>
@@ -57,36 +59,25 @@
 
         <section id="profile-page" class="page">
             <div class="profile-header">
-                <div class="avatar-circle">
-                    <i class="fas fa-user-tie"></i>
-                </div>
+                <div class="avatar-circle"><i class="fas fa-user-tie"></i></div>
                 <h2>ហម ម៉ាលីនដា</h2>
-                <span class="badge">Developer</span>
+                <span class="badge-dev">Developer</span>
             </div>
             
             <div class="container">
                 <div class="info-list">
                     <div class="info-tile">
                         <i class="fas fa-id-card"></i>
-                        <div class="tile-body">
-                            <label>ឈ្មោះអ្នកបង្កើត</label>
-                            <p>ហម ម៉ាលីនដា</p>
-                        </div>
+                        <div class="tile-body"><label>ឈ្មោះអ្នកបង្កើត</label><p>ហម ម៉ាលីនដា</p></div>
                     </div>
                     <a href="tel:017751115" class="info-tile">
                         <i class="fas fa-phone-alt"></i>
-                        <div class="tile-body">
-                            <label>លេខទូរសព្ទ</label>
-                            <p>017 751 115</p>
-                        </div>
+                        <div class="tile-body"><label>លេខទូរសព្ទ</label><p>017 751 115</p></div>
                         <i class="fas fa-chevron-right arrow"></i>
                     </a>
                     <a href="https://t.me/MalindaHorm" target="_blank" class="info-tile">
                         <i class="fab fa-telegram-plane"></i>
-                        <div class="tile-body">
-                            <label>Telegram</label>
-                            <p>t.me/MalindaHorm</p>
-                        </div>
+                        <div class="tile-body"><label>Telegram</label><p>t.me/MalindaHorm</p></div>
                         <i class="fas fa-chevron-right arrow"></i>
                     </a>
                 </div>
@@ -95,18 +86,13 @@
 
         <nav class="nav-bar">
             <button class="nav-btn active" onclick="navigate('home', this)">
-                <i class="fas fa-chart-pie"></i>
-                <span>ទិន្នន័យ</span>
+                <i class="fas fa-chart-pie"></i><span>ទិន្នន័យ</span>
             </button>
             <button class="nav-btn" onclick="navigate('profile', this)">
-                <i class="fas fa-user-circle"></i>
-                <span>គណនី</span>
+                <i class="fas fa-user-circle"></i><span>គណនី</span>
             </button>
         </nav>
     </div>
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
