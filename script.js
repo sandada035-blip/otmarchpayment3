@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkruguofcfE8_RulcgD79XtIyrYkqYIsUb1C4C99XnMZsUrfws2PKb3rGk9Ype6P8b6A/exec"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbruguofcfE8_RulcgD79XtIyrYkqYIsUb1C4C99XnMZsUrfws2PKb3rGk9Ype6P8b6A/exec"; 
 let globalData = { teachers: [], students: [] };
 let currentView = 'teachers';
 
@@ -92,4 +92,3 @@ function handleSearch() {
 }
 
 window.onload = loadAllData;
-
