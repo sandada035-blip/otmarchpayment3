@@ -85,10 +85,25 @@ function switchContent(type, btn) {
     type === 'teachers' ? renderTeachers() : renderStudents();
 }
 
+// មុខងារប្តូរទំព័រធំ (ទិន្នន័យ vs គណនី)
+function navigate(pageId, btn) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId + '-page').classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // បន្ថែមថ្មី៖ បើត្រលប់មកទំព័រទិន្នន័យ (home) ឱ្យវាលោតទៅកាន់ Tab "គ្រូបង្រៀន" វិញដោយស្វ័យប្រវត្តិ
+    if (pageId === 'home') {
+        const teacherTabBtn = document.querySelector('.tab-item'); // ចាប់យកប៊ូតុង Tab ទី១ (គ្រូបង្រៀន)
+        switchContent('teachers', teacherTabBtn);
+    }
+}
+
 function handleSearch() {
     const q = document.getElementById('search-input').value;
     currentView === 'teachers' ? renderTeachers(q) : renderStudents(q);
 }
 
 window.onload = loadAllData;
+
 
